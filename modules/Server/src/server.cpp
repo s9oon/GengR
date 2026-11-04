@@ -47,35 +47,3 @@ namespace GengR::Server {
         std::println("message: {}", text);
     }
 }
-
-/*
-#include <iostream>
-
-int main() {
-    ENetAddress address;
-    ENetHost *server;
-
-    address = {
-        ENET_HOST_ANY, // Set to 0.0.0.0
-        1234 // Set the port of 1234
-    };
-
-    server = enet_host_create(&address, 
-        16, // Allow 16 client connections
-        2, // Allow 2 channels
-        0, // Allow unlimited incoming bandwidth
-        0 // ALlow unlimited outcoming bandwidth
-    );
-
-    if (server == NULL) {
-        std::cerr << "Failed to create ENet server!\n";
-        exit(EXIT_FAILURE);
-    }
-
-    std::cout << "Press any key to quit...\n";
-
-    std::cin.get();
-
-    return 0;
-}
-*/
