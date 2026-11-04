@@ -1,6 +1,7 @@
 #include <enet.h>
 #include "GengR/Client/client.hpp"
 #include <format>
+#include <print>
 #include <stdexcept>
 
 namespace GengR::Client {
@@ -30,6 +31,21 @@ namespace GengR::Client {
         }
     }
 
+    void Host::sendMessage(const std::string& text) {
+        if (!connected) {
+           throw std::runtime_error("not connected to a server");
+        }
+
+        std::vector<std::uint8_t> bytes = Net::serializeMessage(text);
+
+        ENetPacket* packet = enet_packet_create(bytes.data(), bytes.size(), ENET_PACKET_FLAG_RELIABLE);
+
+        if (enet_peer_send(peer, 0, packet) < 0) {
+            enet_packet_destroy(packet);   // ENet didn't take it, so it's ours to free
+        }
+    }
+
+
     void Host::pollEvents(std::uint8_t timeoutMs) {
         auto events = host.poll(timeoutMs);
         for (auto event : events) {
@@ -38,6 +54,7 @@ namespace GengR::Client {
                     connected = true;
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
+                    Net::dispatchPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
                     enet_packet_destroy(event.packet); // must always be destroyed
                     break;
                 case ENET_EVENT_TYPE_DISCONNECT:
@@ -49,5 +66,9 @@ namespace GengR::Client {
                     break;
             }
         }
+    }
+
+    void Host::onMessage(_ENetPeer* from, const std::string& text) {
+        std::println("message from server: {}", text);
     }
 }

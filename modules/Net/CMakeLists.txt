@@ -1,6 +1,7 @@
 add_library(gengr_net STATIC
     src/enet_impl.cpp
     src/host.cpp
+    src/protocol.cpp
 )
 
 target_include_directories(gengr_net PUBLIC

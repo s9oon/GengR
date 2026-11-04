@@ -1,5 +1,6 @@
 #include <enet.h>
 #include "GengR/Server/server.hpp"
+#include <print>
 
 namespace GengR::Server {
     Host::Host(const Config& config)
@@ -29,6 +30,7 @@ namespace GengR::Server {
                 case ENET_EVENT_TYPE_CONNECT:
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
+                    Net::dispatchPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
                     enet_packet_destroy(event.packet); // must always be destroyed
                     break;
                 case ENET_EVENT_TYPE_DISCONNECT:
@@ -39,6 +41,10 @@ namespace GengR::Server {
                     break;
             }
         }
+    }
+
+    void Host::onMessage(_ENetPeer* from, const std::string& text) {
+        std::println("message: {}", text);
     }
 }
 

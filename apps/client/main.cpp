@@ -21,6 +21,13 @@ int main() {
         }
 
         std::println("Connected to server");
+
+        client.sendMessage("hello");
+
+        // sendMessage only queues the packet; polling gives ENet the chance to actually send it
+        for (int i = 0; i < 10; ++i) {
+            client.pollEvents(10);
+        }
     } catch (const std::exception& e) {
         std::println(stderr, "error: {}", e.what());
         return 1;

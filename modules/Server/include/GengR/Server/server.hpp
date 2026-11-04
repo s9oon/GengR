@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <atomic>
 #include "GengR/Net/host.hpp"
+#include "GengR/Net/protocol.hpp"
 
 namespace GengR::Server {
 
@@ -19,7 +20,7 @@ namespace GengR::Server {
         std::uint32_t outgoingBandwidth = 0;
     };
     
-    class Host {
+    class Host : public Net::PacketHandler {
     public:
         explicit Host(const Config& config); // throws std::runtime_error on failure
 
@@ -32,6 +33,9 @@ namespace GengR::Server {
 
     private:
         void pollEvents();
+
+        // PacketHandler: what the server does with each packet type
+        void onMessage(_ENetPeer* from, const std::string& text) override;
 
         Net::Host host; // cleans itself up, so Server::Host needs no destructor
         std::atomic<bool> running = false;
