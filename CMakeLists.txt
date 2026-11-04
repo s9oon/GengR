@@ -16,6 +16,12 @@ endif()
 
 project(GengR VERSION 0.1.0)
 
+#SDL (library)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+
+add_subdirectory(external/vendored/SDL EXCLUDE_FROM_ALL)
+
 #modules (libraries), lowest level first
 add_subdirectory(modules/Net)
 add_subdirectory(modules/Server)
