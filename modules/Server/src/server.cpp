@@ -23,10 +23,8 @@ namespace GengR::Server {
     }
 
     void Host::pollEvents() {
-        ENetEvent event;
-
-        // waits up to 10ms for an event, so the loop in start() doesn't spin
-        while (enet_host_service(host.get(), &event, 10) > 0) {
+        auto events = host.poll(10);
+        for (auto event : events) {
             switch (event.type) {
                 case ENET_EVENT_TYPE_CONNECT:
                     break;

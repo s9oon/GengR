@@ -42,6 +42,17 @@ namespace GengR::Net {
         }
     }
 
+    std::vector<_ENetEvent> Host::poll(std::uint8_t tick) {
+        std::vector<_ENetEvent> events; // new, empty list each call
+        _ENetEvent event;
+
+        while(enet_host_service (host, &event, tick) > 0) {
+            events.push_back(event);
+        }
+
+        return events;
+    }
+
     // runs automatically when the Host goes out of scope
     Host::~Host() {
         enet_host_destroy(host);

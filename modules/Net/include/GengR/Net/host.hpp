@@ -4,9 +4,11 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <vector>
 
 // ENet's host type, forward declared so this header doesn't need enet.h
 struct _ENetHost;
+struct _ENetEvent; // what the _ is for so I just mimiced it noramlly I thouhg you wouldnt have it
 
 namespace GengR::Net {
 
@@ -26,6 +28,9 @@ namespace GengR::Net {
              std::size_t maxChannels,
              std::uint32_t incomingBandwidth,
              std::uint32_t outgoingBandwidth);
+            
+        std::vector<_ENetEvent> poll(std::uint8_t tick);
+
         ~Host();
 
         // one Host owns one ENet host, so no copying or moving
