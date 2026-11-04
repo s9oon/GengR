@@ -1,0 +1,42 @@
+#pragma once
+
+#include <cstddef>
+#include <cstdint>
+#include <optional>
+#include <string>
+
+// ENet's host type, forward declared so this header doesn't need enet.h
+struct _ENetHost;
+
+namespace GengR::Net {
+
+    struct Address {
+        std::string host;
+        std::uint16_t port = 0;
+    };
+
+    // Owns one ENet host: sets ENet up when created, cleans it up when destroyed.
+    // Server and Client both build on this.
+    class Host {
+    public:
+        // bind = the address to listen on (server), or std::nullopt to only connect out (client)
+        // throws std::runtime_error on failure
+        Host(const std::optional<Address>& bind,
+             std::size_t maxPeers,
+             std::size_t maxChannels,
+             std::uint32_t incomingBandwidth,
+             std::uint32_t outgoingBandwidth);
+        ~Host();
+
+        // one Host owns one ENet host, so no copying or moving
+        Host(const Host&) = delete;
+        Host& operator=(const Host&) = delete;
+
+        // the raw ENet host, for Server/Client code that calls ENet directly
+        _ENetHost* get() const { return host; }
+
+    private:
+        _ENetHost* host = nullptr;
+    };
+
+}

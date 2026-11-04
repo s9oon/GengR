@@ -1,0 +1,17 @@
+C:/Workspace/GengR/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Net/CMakeFiles/gengr_net.dir
+C:/Workspace/GengR/build/x64-debug/modules/Net/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Net/CMakeFiles/rebuild_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Server/CMakeFiles/gengr_server.dir
+C:/Workspace/GengR/build/x64-debug/modules/Server/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Server/CMakeFiles/rebuild_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Client/CMakeFiles/gengr_client.dir
+C:/Workspace/GengR/build/x64-debug/modules/Client/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/modules/Client/CMakeFiles/rebuild_cache.dir
+C:/Workspace/GengR/build/x64-debug/apps/server/CMakeFiles/GengRServer.dir
+C:/Workspace/GengR/build/x64-debug/apps/server/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/apps/server/CMakeFiles/rebuild_cache.dir
+C:/Workspace/GengR/build/x64-debug/apps/client/CMakeFiles/GengRClient.dir
+C:/Workspace/GengR/build/x64-debug/apps/client/CMakeFiles/edit_cache.dir
+C:/Workspace/GengR/build/x64-debug/apps/client/CMakeFiles/rebuild_cache.dir
