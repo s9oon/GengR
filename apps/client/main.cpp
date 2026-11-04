@@ -8,6 +8,11 @@
 #include <string>
 #include <thread>
 
+#define SDL_MAIN_USE_CALLBACKS 1
+
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
 namespace {
     // shared between the input thread and the main loop; at file scope so they outlive
     // the detached input thread, which may still be waiting in getline when main returns
@@ -16,6 +21,21 @@ namespace {
     std::atomic<bool> running = true;
 }
 
+static SDL_Window* window = nullptr;
+static SDL_Renderer* renderer = nullptr;
+
+/* This function runs once at startup. */
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    /* Create the window */
+    if (!SDL_CreateWindowAndRenderer("Hello World", 800, 600, SDL_WINDOW_FULLSCREEN, &window, &renderer)) {
+        SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+    return SDL_APP_CONTINUE;
+}
+
+/*
 int main() {
     GengR::Client::Config config;
 
@@ -73,3 +93,4 @@ int main() {
         return 1;
     }
 }
+*/
