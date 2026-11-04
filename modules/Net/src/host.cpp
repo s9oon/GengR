@@ -1,5 +1,6 @@
 #include <enet.h>
 #include "GengR/Net/host.hpp"
+#include "GengR/Net/protocol.hpp"
 #include <format>
 #include <stdexcept>
 
@@ -51,6 +52,16 @@ namespace GengR::Net {
         }
 
         return events;
+    }
+
+    void Host::sendMessage(_ENetPeer* peer, const std::string& text) {
+        std::vector<std::uint8_t> bytes = serializeMessage(text);
+
+        ENetPacket* packet = enet_packet_create(bytes.data(), bytes.size(), ENET_PACKET_FLAG_RELIABLE);
+
+        if (enet_peer_send(peer, 0, packet) < 0) {
+            enet_packet_destroy(packet);   // ENet didn't take it, so it's ours to free
+        }
     }
 
     // runs automatically when the Host goes out of scope

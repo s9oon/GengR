@@ -36,13 +36,7 @@ namespace GengR::Client {
            throw std::runtime_error("not connected to a server");
         }
 
-        std::vector<std::uint8_t> bytes = Net::serializeMessage(text);
-
-        ENetPacket* packet = enet_packet_create(bytes.data(), bytes.size(), ENET_PACKET_FLAG_RELIABLE);
-
-        if (enet_peer_send(peer, 0, packet) < 0) {
-            enet_packet_destroy(packet);   // ENet didn't take it, so it's ours to free
-        }
+        host.sendMessage(peer, text);
     }
 
 

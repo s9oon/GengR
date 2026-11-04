@@ -28,6 +28,7 @@ namespace GengR::Server {
         for (auto event : events) {
             switch (event.type) {
                 case ENET_EVENT_TYPE_CONNECT:
+                    peers.push_back(event.peer);
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     Net::dispatchPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
@@ -45,5 +46,14 @@ namespace GengR::Server {
 
     void Host::onMessage(_ENetPeer* from, const std::string& text) {
         std::println("message: {}", text);
+        broadcast(from, text);
+    }
+
+    void Host::broadcast(_ENetPeer* from, const std::string& text) {
+        for (_ENetPeer* peer: peers) {
+            if (peer != from) {
+                host.sendMessage(peer, text);
+            }
+        }
     }
 }

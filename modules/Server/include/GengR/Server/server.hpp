@@ -37,6 +37,9 @@ namespace GengR::Server {
         // PacketHandler: what the server does with each packet type
         void onMessage(_ENetPeer* from, const std::string& text) override;
 
+        void broadcast(_ENetPeer* from, const std::string& text);
+
+        std::vector<_ENetPeer*> peers; 
         Net::Host host; // cleans itself up, so Server::Host needs no destructor
         std::atomic<bool> running = false;
     };

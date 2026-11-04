@@ -9,6 +9,7 @@
 // forward declared so this header doesn't need enet.h
 struct _ENetHost;
 struct _ENetEvent;
+struct _ENetPeer;
 
 namespace GengR::Net {
 
@@ -30,6 +31,9 @@ namespace GengR::Net {
              std::uint32_t outgoingBandwidth);
             
         std::vector<_ENetEvent> poll(std::uint8_t tick);
+
+        // serializes text as a Message packet and queues it for peer; it goes out on the next poll
+        void sendMessage(_ENetPeer* peer, const std::string& text);
 
         ~Host();
 
