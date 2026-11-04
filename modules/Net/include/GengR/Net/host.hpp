@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-// ENet's host type, forward declared so this header doesn't need enet.h
+// forward declared so this header doesn't need enet.h
 struct _ENetHost;
-struct _ENetEvent; // what the _ is for so I just mimiced it noramlly I thouhg you wouldnt have it
+struct _ENetEvent;
 
 namespace GengR::Net {
 
