@@ -8,7 +8,19 @@ int main() {
     try {
         GengR::Client::Host client(config);
 
-        std::println("Client host created");
+        client.connectToServer({ "::1", 1234 }); // the server on this machine
+
+        // give the server up to 5 seconds (500 x 10ms) to answer
+        for (int i = 0; i < 500 && !client.isConnected(); ++i) {
+            client.pollEvents(10);
+        }
+
+        if (!client.isConnected()) {
+            std::println(stderr, "error: couldn't connect to the server");
+            return 1;
+        }
+
+        std::println("Connected to server");
     } catch (const std::exception& e) {
         std::println(stderr, "error: {}", e.what());
         return 1;
