@@ -8,4 +8,5 @@ if "%CONFIG%"=="" set CONFIG=debug
 
 call "%~dp0build.cmd" %CONFIG% || exit /b 1
 
-"%~dp0..\build\x64-%CONFIG%\apps\server\GengRServer.exe"
+rem exe sits in build\x64-<config>\<config>\ (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+"%~dp0..\build\x64-%CONFIG%\%CONFIG%\GengRServer.exe"
