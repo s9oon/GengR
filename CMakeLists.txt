@@ -26,6 +26,7 @@ set_target_properties(raylib PROPERTIES
 
 #modules (libraries), lowest level first
 add_subdirectory(modules/Net)
+add_subdirectory(modules/Engine)
 add_subdirectory(modules/Server)
 add_subdirectory(modules/Client)
 

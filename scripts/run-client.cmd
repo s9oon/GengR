@@ -8,5 +8,5 @@ if "%CONFIG%"=="" set CONFIG=debug
 
 call "%~dp0build.cmd" %CONFIG% || exit /b 1
 
-rem exe sits next to SDL3.dll in build\x64-<config>\<config>\ (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-"%~dp0..\build\x64-%CONFIG%\%CONFIG%\GengRClient.exe"
+rem CMake puts each exe in the build folder matching its source folder (apps\client -> build\...\apps\client)
+"%~dp0..\build\x64-%CONFIG%\apps\client\GengRClient.exe"

@@ -2,7 +2,7 @@ add_executable(GengRClient
     main.cpp
 )
 
-target_link_libraries(GengRClient PRIVATE gengr_client raylib)
+target_link_libraries(GengRClient PRIVATE gengr_client gengr_engine)
 
 add_custom_command(TARGET GengRClient POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
