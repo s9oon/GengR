@@ -54,14 +54,21 @@ namespace GengR::Net {
         return events;
     }
 
-    void Host::sendMessage(_ENetPeer* peer, const std::string& text) {
-        std::vector<std::uint8_t> bytes = serializeMessage(text);
+    void Host::send(_ENetPeer* peer, const std::vector<std::uint8_t>& bytes, std::uint8_t channel, bool reliable) {
+        ENetPacket* packet = enet_packet_create(bytes.data(), bytes.size(),
+                                            reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
 
-        ENetPacket* packet = enet_packet_create(bytes.data(), bytes.size(), ENET_PACKET_FLAG_RELIABLE);
-
-        if (enet_peer_send(peer, 0, packet) < 0) {
+        if (enet_peer_send(peer, channel, packet) < 0) {
             enet_packet_destroy(packet);   // ENet didn't take it, so it's ours to free
         }
+    }
+
+    void Host::sendMessage(_ENetPeer* peer, const std::string& text) {
+        send(peer, serializeMessage(text), 0, true);
+    }
+
+    void Host::sendPosition(_ENetPeer* peer, const Vec2 &pos) {
+        send(peer, serializePosition(pos), 1, false);
     }
 
     // runs automatically when the Host goes out of scope

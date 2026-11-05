@@ -1,6 +1,31 @@
 #include "GengR/Net/protocol.hpp"
+#include <cstring>
 
 namespace GengR::Net {
+
+    // this is vulnrable so im gonna leave it here for exploiting later
+    // Real problems like edian assumptions
+
+    std::vector<std::uint8_t> serializePosition(Vec2 pos) {
+        std::vector<std::uint8_t> bytes(9);                   
+        bytes[0] = static_cast<std::uint8_t>(PacketType::Position);
+        std::memcpy(&bytes[1], &pos.x, 4);
+        std::memcpy(&bytes[5], &pos.y, 4); 
+        return bytes;
+    }
+
+    // data/length = the whole packet, type byte included
+    std::optional<Vec2> deserializePosition(const std::uint8_t* data, std::size_t length) {
+        if (length != 9) {
+            return std::nullopt; // never trust a packet: wrong size
+        }
+
+        Vec2 pos;
+        std::memcpy(&pos.x, data + 1, 4); // bytes 1-4 → x
+        std::memcpy(&pos.y, data + 5, 4); // bytes 5-8 → y
+        return pos;
+    }
+
     // [type][text...]
     std::vector<std::uint8_t> serializeMessage(const std::string& text) {
         std::vector<std::uint8_t> bytes;
@@ -30,6 +55,12 @@ namespace GengR::Net {
         switch (static_cast<PacketType>(data[0])) {
             case PacketType::Message:
                 handler.onMessage(from, deserializeMessage(data, length));
+                break;
+            case PacketType::Position:
+                // only call the handler if the packet was valid (exactly 9 bytes)
+                if (auto pos = deserializePosition(data, length)) {
+                    handler.onPosition(from, *pos);
+                }
                 break;
             default:
                 break; // unknown type: ignore it

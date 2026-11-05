@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include "GengR/Net/types.hpp"
 
 // forward declared so this header doesn't need enet.h
 struct _ENetHost;
@@ -33,7 +34,8 @@ namespace GengR::Net {
         std::vector<_ENetEvent> poll(std::uint8_t tick);
 
         // serializes text as a Message packet and queues it for peer; it goes out on the next poll
-        void sendMessage(_ENetPeer* peer, const std::string& text);
+        void sendMessage(_ENetPeer* peer, const std::string &text);
+        void sendPosition(_ENetPeer* peer, const Vec2 &position);
 
         ~Host();
 
@@ -45,6 +47,8 @@ namespace GengR::Net {
         _ENetHost* get() const { return host; }
 
     private:
+        void send(_ENetPeer* peer, const std::vector<std::uint8_t>& bytes, std::uint8_t channel, bool reliable);
+
         _ENetHost* host = nullptr;
     };
 

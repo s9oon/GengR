@@ -49,6 +49,10 @@ namespace GengR::Server {
         broadcast(from, text);
     }
 
+    void Host::onPosition(_ENetPeer* from, Vec2 pos) {
+        // TODO
+    }
+
     void Host::broadcast(_ENetPeer* from, const std::string& text) {
         for (_ENetPeer* peer: peers) {
             if (peer != from) {

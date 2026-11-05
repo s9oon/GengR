@@ -36,6 +36,7 @@ namespace GengR::Server {
 
         // PacketHandler: what the server does with each packet type
         void onMessage(_ENetPeer* from, const std::string& text) override;
+        void onPosition(_ENetPeer* from, Vec2 pos) override;
 
         void broadcast(_ENetPeer* from, const std::string& text);
 
