@@ -7,17 +7,33 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include "GengR/Engine/input.hpp"
 #include "GengR/Engine/window.hpp"
 
 int main() {
     using namespace GengR::Engine;
+    using GengR::Vec2;
 
     try {
         Window window("GengR", 800, 450); // opens the window; the destructor closes it
 
+        Vec2 pos { 375, 200 };        // top-left corner of the square
+        const float speed = 300.0f;   // pixels per second
+
         while (!window.shouldClose()) {
+            float dt = window.frameTime(); // seconds since the last frame
+
+            // -1, 0 or +1 on each axis; screen y grows downwards, so up is minus
+            Vec2 dir {};
+            if (isKeyDown(Key::W)) dir.y -= 1;
+            if (isKeyDown(Key::S)) dir.y += 1;
+            if (isKeyDown(Key::A)) dir.x -= 1;
+            if (isKeyDown(Key::D)) dir.x += 1;
+
+            pos += dir * (speed * dt);
+
             window.beginFrame();
-            window.drawSquare({ 375, 200 }, 50, Colors::Red); // roughly centred
+            window.drawSquare(pos, 50, Colors::Red);
             window.endFrame();
         }
     } catch (const std::exception& e) {
