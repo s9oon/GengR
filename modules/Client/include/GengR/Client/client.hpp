@@ -17,7 +17,7 @@ namespace GengR::Client {
         std::uint32_t outgoingBandwidth = 0;
     };
 
-    class Host : public Net::PacketHandler {
+    class Host : public Net::ClientPacketHandler {
     public:
         explicit Host(const Config& config); // throws std::runtime_error on failure
 
@@ -40,10 +40,9 @@ namespace GengR::Client {
         Host& operator=(const Host&) = delete;
 
     private:
-        // PacketHandler: what the client does with each packet type
+        // ClientPacketHandler: what the client does with each packet the server can send
         void onMessage(_ENetPeer* from, const std::string& text) override;
-
-        void onPosition(_ENetPeer* from, Vec2 pos) override;
+        void onPlayerPosition(std::uint32_t id, Vec2 pos) override;
 
         Net::Host host; // cleans itself up, so Client::Host needs no destructor
         std::size_t maxChannels; // needed again when connecting

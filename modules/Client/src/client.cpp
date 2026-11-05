@@ -55,7 +55,7 @@ namespace GengR::Client {
                     connected = true;
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
-                    Net::dispatchPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
+                    Net::dispatchClientPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
                     enet_packet_destroy(event.packet); // must always be destroyed
                     break;
                 case ENET_EVENT_TYPE_DISCONNECT:
@@ -73,7 +73,7 @@ namespace GengR::Client {
         std::println("message from server: {}", text);
     }
 
-    void Host::onPosition(_ENetPeer* from, Vec2 pos) {
+    void Host::onPlayerPosition(std::uint32_t id, Vec2 pos) {
         // TODO
     }
 }

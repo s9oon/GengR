@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <atomic>
+#include <unordered_map>
 #include "GengR/Net/host.hpp"
 #include "GengR/Net/protocol.hpp"
 
@@ -20,7 +21,7 @@ namespace GengR::Server {
         std::uint32_t outgoingBandwidth = 0;
     };
     
-    class Host : public Net::PacketHandler {
+    class Host : public Net::ServerPacketHandler {
     public:
         explicit Host(const Config& config); // throws std::runtime_error on failure
 
@@ -34,13 +35,23 @@ namespace GengR::Server {
     private:
         void pollEvents();
 
-        // PacketHandler: what the server does with each packet type
+        // ServerPacketHandler: what the server does with each packet a client can send
         void onMessage(_ENetPeer* from, const std::string& text) override;
         void onPosition(_ENetPeer* from, Vec2 pos) override;
 
-        void broadcast(_ENetPeer* from, const std::string& text);
+        // calls send(peer) for every connected peer except `from` (the sender)
+        // template so it takes any lambda; templates must be defined in the header
+        template <typename SendFn>
+        void broadcast(_ENetPeer* from, SendFn send) {
+            for (const auto& [peer, id] : peers) {
+                if (peer != from) {
+                    send(peer);
+                }
+            }
+        }
 
-        std::vector<_ENetPeer*> peers; 
+        std::unordered_map<_ENetPeer*, std::uint32_t> peers;   // connected peer → player id
+        std::uint32_t nextId = 1; 
         Net::Host host; // cleans itself up, so Server::Host needs no destructor
         std::atomic<bool> running = false;
     };

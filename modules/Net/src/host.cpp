@@ -71,6 +71,10 @@ namespace GengR::Net {
         send(peer, serializePosition(pos), 1, false);
     }
 
+    void Host::sendPlayerPosition(_ENetPeer* peer, std::uint32_t id, Vec2 pos) {
+        send(peer, serializePlayerPosition(id, pos), 1, false); // unreliable, same channel as Position
+    }
+
     // runs automatically when the Host goes out of scope
     Host::~Host() {
         enet_host_destroy(host);

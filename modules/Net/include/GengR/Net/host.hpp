@@ -36,6 +36,7 @@ namespace GengR::Net {
         // serializes text as a Message packet and queues it for peer; it goes out on the next poll
         void sendMessage(_ENetPeer* peer, const std::string &text);
         void sendPosition(_ENetPeer* peer, const Vec2 &position);
+        void sendPlayerPosition(_ENetPeer* peer, std::uint32_t id, Vec2 pos);
 
         ~Host();
 

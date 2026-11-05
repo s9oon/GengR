@@ -26,6 +26,16 @@ namespace GengR::Net {
         return pos;
     }
 
+    // [type][id][x][y] = 1 + 4 + 4 + 4 = 13 bytes
+    std::vector<std::uint8_t> serializePlayerPosition(std::uint32_t id, Vec2 pos) {
+        std::vector<std::uint8_t> bytes(13);
+        bytes[0] = static_cast<std::uint8_t>(PacketType::PlayerPosition);
+        std::memcpy(&bytes[1], &id, 4);    // bytes 1-4  → id
+        std::memcpy(&bytes[5], &pos.x, 4); // bytes 5-8  → x
+        std::memcpy(&bytes[9], &pos.y, 4); // bytes 9-12 → y
+        return bytes;
+    }
+
     // [type][text...]
     std::vector<std::uint8_t> serializeMessage(const std::string& text) {
         std::vector<std::uint8_t> bytes;
@@ -47,7 +57,8 @@ namespace GengR::Net {
         return std::string(reinterpret_cast<const char*>(data + 1), length - 1);
     }
 
-    void dispatchPacket(_ENetPeer* from, const std::uint8_t *data, std::size_t length, PacketHandler& handler) {
+    // packets a client may send to the server
+    void dispatchServerPacket(_ENetPeer* from, const std::uint8_t *data, std::size_t length, ServerPacketHandler& handler) {
         if (length < 1) {
             return; // never trust a packet: too short to even have a type byte
         }
@@ -63,7 +74,22 @@ namespace GengR::Net {
                 }
                 break;
             default:
-                break; // unknown type: ignore it
+                break; // unknown or server->client type: ignore it
+        }
+    }
+
+    // packets the server may send to a client
+    void dispatchClientPacket(_ENetPeer* from, const std::uint8_t *data, std::size_t length, ClientPacketHandler& handler) {
+        if (length < 1) {
+            return; // never trust a packet: too short to even have a type byte
+        }
+
+        switch (static_cast<PacketType>(data[0])) {
+            case PacketType::Message:
+                handler.onMessage(from, deserializeMessage(data, length));
+                break;
+            default:
+                break; // unknown or client->server type: ignore it
         }
     }
 }
