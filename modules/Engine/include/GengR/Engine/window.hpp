@@ -8,6 +8,8 @@ namespace GengR::Engine {
         Window(const char* title, int width, int height); // throws on failure
         ~Window();
 
+        float frameTime() const;
+
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
 

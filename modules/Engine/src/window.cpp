@@ -26,6 +26,8 @@ namespace GengR::Engine {
         CloseWindow();
     }
 
+    float Window::frameTime() const { return GetFrameTime(); }
+
     bool Window::shouldClose() const {
         return WindowShouldClose(); // true on the close button or Esc
     }

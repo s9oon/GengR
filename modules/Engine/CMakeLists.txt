@@ -1,5 +1,6 @@
 add_library(gengr_engine STATIC
     src/window.cpp
+    src/input.cpp
 )
 
 target_include_directories(gengr_engine PUBLIC
