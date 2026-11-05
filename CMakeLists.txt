@@ -16,11 +16,13 @@ endif()
 
 project(GengR VERSION 0.1.0)
 
-#SDL (library)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-
-add_subdirectory(external/vendored/SDL EXCLUDE_FROM_ALL)
+#import raylib
+add_library(raylib SHARED IMPORTED)
+set_target_properties(raylib PROPERTIES
+    IMPORTED_IMPLIB               "${CMAKE_SOURCE_DIR}/external/raylib/raylibdll.lib"
+    IMPORTED_LOCATION             "${CMAKE_SOURCE_DIR}/external/raylib/raylib.dll"
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/external/raylib"
+)
 
 #modules (libraries), lowest level first
 add_subdirectory(modules/Net)
