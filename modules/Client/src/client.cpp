@@ -74,6 +74,6 @@ namespace GengR::Client {
     }
 
     void Host::onPlayerPosition(std::uint32_t id, Vec2 pos) {
-        // TODO
+        others[id] = pos; // new id: adds it; known id: overwrites it
     }
 }

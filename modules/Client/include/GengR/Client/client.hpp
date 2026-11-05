@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 #include "GengR/Net/host.hpp"
 #include "GengR/Net/protocol.hpp"
 
@@ -35,6 +36,10 @@ namespace GengR::Client {
 
         _ENetPeer* getPeer() const { return peer; } // the connection to the server, nullptr if none
 
+        // id → latest position of every other player we've heard from
+        // const& so main reads it without copying; const so main can't change it
+        const std::unordered_map<std::uint32_t, Vec2>& otherPlayers() const { return others; }
+
         // one Host owns one ENet host, so no copying or moving
         Host(const Host&) = delete;
         Host& operator=(const Host&) = delete;
@@ -48,6 +53,7 @@ namespace GengR::Client {
         std::size_t maxChannels; // needed again when connecting
         _ENetPeer *peer = nullptr;
         bool connected = false;
+        std::unordered_map<std::uint32_t, Vec2> others; // filled by onPlayerPosition
     };
 
 }

@@ -20,7 +20,14 @@ namespace GengR::Net {
     std::vector<std::uint8_t> serializePosition(Vec2 pos);
     std::optional<Vec2> deserializePosition(const std::uint8_t *data, std::size_t length);
 
+    // what a PlayerPosition packet decodes into
+    struct PlayerPosition {
+        std::uint32_t id = 0;
+        Vec2 pos;
+    };
+
     std::vector<std::uint8_t> serializePlayerPosition(std::uint32_t id, Vec2 pos);
+    std::optional<PlayerPosition> deserializePlayerPosition(const std::uint8_t *data, std::size_t length);
 
     std::vector<std::uint8_t> serializeMessage(const std::string& text);
     std::string deserializeMessage(const std::uint8_t *data, std::size_t length);

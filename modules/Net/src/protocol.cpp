@@ -36,6 +36,19 @@ namespace GengR::Net {
         return bytes;
     }
 
+    // data/length = the whole packet, type byte included
+    std::optional<PlayerPosition> deserializePlayerPosition(const std::uint8_t* data, std::size_t length) {
+        if (length != 13) {
+            return std::nullopt; // never trust a packet: wrong size
+        }
+
+        PlayerPosition result;
+        std::memcpy(&result.id, data + 1, 4);    // bytes 1-4  → id
+        std::memcpy(&result.pos.x, data + 5, 4); // bytes 5-8  → x
+        std::memcpy(&result.pos.y, data + 9, 4); // bytes 9-12 → y
+        return result;
+    }
+
     // [type][text...]
     std::vector<std::uint8_t> serializeMessage(const std::string& text) {
         std::vector<std::uint8_t> bytes;
@@ -87,6 +100,12 @@ namespace GengR::Net {
         switch (static_cast<PacketType>(data[0])) {
             case PacketType::Message:
                 handler.onMessage(from, deserializeMessage(data, length));
+                break;
+            case PacketType::PlayerPosition:
+                // only call the handler if the packet was valid (exactly 13 bytes)
+                if (auto player = deserializePlayerPosition(data, length)) {
+                    handler.onPlayerPosition(player->id, player->pos);
+                }
                 break;
             default:
                 break; // unknown or client->server type: ignore it
