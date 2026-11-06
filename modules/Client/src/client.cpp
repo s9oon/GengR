@@ -31,7 +31,7 @@ namespace GengR::Client {
         }
     }
 
-    void Host::sendMessage(const std::string& text) {
+    void Host::sendMessage(const std::string &text) {
         if (!connected) {
            throw std::runtime_error("not connected to a server");
         }
@@ -39,6 +39,13 @@ namespace GengR::Client {
         host.sendMessage(peer, text);
     }
 
+    void Host::sendPosition(const Vec2 &position) {
+        if (!connected) {
+            return; // called every frame, including before the connection is up, so don't throw
+        }
+
+        host.sendPosition(peer, position);
+    }
 
     void Host::pollEvents(std::uint8_t timeoutMs) {
         auto events = host.poll(timeoutMs);
@@ -48,7 +55,7 @@ namespace GengR::Client {
                     connected = true;
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
-                    Net::dispatchPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
+                    Net::dispatchClientPacket(event.peer, event.packet->data, event.packet->dataLength, *this);
                     enet_packet_destroy(event.packet); // must always be destroyed
                     break;
                 case ENET_EVENT_TYPE_DISCONNECT:
@@ -64,5 +71,9 @@ namespace GengR::Client {
 
     void Host::onMessage(_ENetPeer* from, const std::string& text) {
         std::println("message from server: {}", text);
+    }
+
+    void Host::onPlayerPosition(std::uint32_t id, Vec2 pos) {
+        others[id] = pos; // new id: adds it; known id: overwrites it
     }
 }

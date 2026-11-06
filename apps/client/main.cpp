@@ -7,17 +7,47 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include "GengR/Engine/input.hpp"
 #include "GengR/Engine/window.hpp"
 
 int main() {
     using namespace GengR::Engine;
+    using GengR::Vec2;
 
     try {
+        GengR::Client::Config config;
+        GengR::Client::Host client(config);
+
+        // only starts connecting; pollEvents() in the loop finishes it, so the window opens straight away
+        // until it's connected, sendPosition does nothing and you just move alone
+        client.connectToServer({ "::1", 1234 }); // the server on this machine
+
         Window window("GengR", 800, 450); // opens the window; the destructor closes it
 
+        Vec2 pos { 375, 200 };        // top-left corner of the square
+        const float speed = 300.0f;   // pixels per second
+
         while (!window.shouldClose()) {
+            client.pollEvents(0); // 0 = don't wait; runs onPlayerPosition for anything that arrived
+
+            float dt = window.frameTime(); // seconds since the last frame
+
+            // -1, 0 or +1 on each axis; screen y grows downwards, so up is minus
+            Vec2 dir {};
+            if (isKeyDown(Key::W)) dir.y -= 1;
+            if (isKeyDown(Key::S)) dir.y += 1;
+            if (isKeyDown(Key::A)) dir.x -= 1;
+            if (isKeyDown(Key::D)) dir.x += 1;
+
+            pos += dir * (speed * dt);
+
+            client.sendPosition(pos); // tell the server where we are; it forwards it to everyone else
+
             window.beginFrame();
-            window.drawSquare({ 375, 200 }, 50, Colors::Red); // roughly centred
+            window.drawSquare(pos, 50, Colors::Red); // us
+            for (const auto& [id, p] : client.otherPlayers()) {
+                window.drawSquare(p, 50, Colors::Blue); // everyone else
+            }
             window.endFrame();
         }
     } catch (const std::exception& e) {
